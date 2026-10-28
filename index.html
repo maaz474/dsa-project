@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>StockLine | Inventory Management System</title>
+<style>
+:root{--bg:#f3f5f8;--card:#fff;--ink:#0f1b2d;--mute:#64728a;--line:#e2e7ef;--side:#0c1a2b;--acc:#0e9f8e;--acc2:#0a7d70;--soft:#e3f6f3;--amb:#e59b0c;--red:#d9382e;--grn:#23915f;--sh:0 1px 3px rgba(15,27,45,.06),0 8px 24px rgba(15,27,45,.05)}
+[data-theme=dark]{--bg:#0b1220;--card:#131d30;--ink:#e8edf5;--mute:#8d9bb3;--line:#223049;--side:#070d18;--soft:#12342f;--sh:0 1px 3px rgba(0,0,0,.4)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 "Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;display:flex;min-height:100vh}
+aside{width:236px;background:var(--side);color:#c5d0e0;padding:22px 14px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;flex:none}
+.brand{display:flex;align-items:center;gap:10px;color:#fff;font-weight:700;font-size:1.2rem;padding:0 8px 22px}
+.logo{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#14c4ae,#0a7d70);display:grid;place-items:center}
+nav button{display:flex;width:100%;align-items:center;gap:12px;background:none;border:0;color:inherit;padding:11px 12px;border-radius:9px;font:inherit;cursor:pointer;margin-bottom:3px;text-align:left}
+nav button:hover{background:rgba(255,255,255,.07)}
+nav button.on{background:var(--acc);color:#fff;font-weight:600}
+nav svg,.ic{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+nav .n{margin-left:auto;font-size:.75rem;background:rgba(255,255,255,.15);padding:1px 8px;border-radius:99px}
+.sfoot{margin-top:auto;font-size:.78rem;color:#7d8ca3;padding:0 8px}
+.main{flex:1;min-width:0}
+.top{display:flex;align-items:center;gap:12px;padding:16px 28px;background:var(--card);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+.top h1{font-size:1.25rem;margin:0;flex:none}
+.sbox{flex:1;max-width:420px;margin-left:auto;position:relative}
+.sbox svg{position:absolute;left:11px;top:10px;color:var(--mute)}
+.sbox input{padding-left:36px}
+input,select{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:8px;font:inherit;background:var(--card);color:var(--ink)}
+input:focus,select:focus,button:focus-visible{outline:2px solid var(--acc);outline-offset:1px}
+button{font:inherit;border:0;border-radius:8px;padding:9px 15px;cursor:pointer;background:var(--acc);color:#fff;font-weight:600;display:inline-flex;align-items:center;gap:7px}
+button:hover{background:var(--acc2)}
+button.g{background:var(--card);color:var(--ink);border:1px solid var(--line)}button.g:hover{background:var(--soft)}
+button.r{background:var(--red)}button.s{padding:5px 9px;font-size:.8rem}
+button.ico{padding:8px 10px}
+.page{padding:24px 28px 40px;display:none}.page.on{display:block}
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:18px}
+.kpi{background:var(--card);border-radius:14px;padding:16px;box-shadow:var(--sh)}
+.kpi span{color:var(--mute);font-size:.82rem}.kpi b{display:block;font-size:1.65rem;line-height:1.3;margin-top:2px}
+.g2{display:grid;grid-template-columns:1.5fr 1fr;gap:18px;margin-bottom:18px}
+.g3{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.card{background:var(--card);border-radius:14px;padding:18px;box-shadow:var(--sh);min-width:0}
+.card h2{font-size:1rem;margin:0 0 14px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.bar{display:grid;grid-template-columns:110px 1fr 80px;gap:10px;align-items:center;margin:9px 0;font-size:.88rem}
+.bar i{display:block;height:10px;border-radius:6px;background:linear-gradient(90deg,var(--acc),#52d6c4);min-width:4px}
+.donut{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+.ring{width:150px;height:150px;border-radius:50%;display:grid;place-items:center;flex:none}
+.ring div{width:96px;height:96px;border-radius:50%;background:var(--card);display:grid;place-items:center;text-align:center;font-size:.8rem;color:var(--mute);line-height:1.2}
+.ring b{display:block;font-size:1.5rem;color:var(--ink)}
+.lg div{margin:6px 0;font-size:.88rem}.lg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:8px}
+.row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:.9rem}.row:last-child{border:0}
+.row .m{color:var(--mute);font-size:.8rem}.row .grow{flex:1;min-width:0}
+.tools{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}.tools select,.tools input{width:auto;min-width:130px}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.9rem}
+th,td{text-align:left;padding:11px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-size:.78rem;color:var(--mute);font-weight:600;background:var(--bg)}
+tr:hover td{background:var(--soft)}
+.bd{padding:3px 10px;border-radius:99px;font-size:.75rem;font-weight:600}
+.ok{background:#dcf3e8;color:var(--grn)}.lw{background:#fcefcf;color:#946100}.out{background:#fbdcd9;color:var(--red)}
+[data-theme=dark] .ok{background:#12372a}[data-theme=dark] .lw{background:#3b2e0c;color:#f0b73d}[data-theme=dark] .out{background:#41191a}
+.st{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.st button{background:var(--card);color:var(--ink);border-radius:0;padding:3px 10px}.st button:hover{background:var(--soft)}
+.st span{min-width:36px;text-align:center;font-weight:600}
+.list{display:flex;align-items:center;overflow-x:auto;padding:30px 4px 14px;min-height:160px}
+.tag{font-size:.72rem;font-weight:700;color:var(--acc2);margin-right:8px}
+.node{display:flex;border:2px solid var(--ink);border-radius:10px;background:var(--card);flex:none;transition:.25s;position:relative}
+.node .d{padding:9px 13px;min-width:130px}.node .d b{display:block;font-size:.88rem}.node .d small{color:var(--mute)}
+.node .p{width:36px;border-left:2px solid var(--ink);background:var(--bg);display:grid;place-items:center;font-size:.68rem;color:var(--mute)}
+.node.low{border-color:var(--amb)}.node.out{border-color:var(--red)}
+.node.hit{background:var(--soft);border-color:var(--acc);transform:translateY(-6px)}.node.vis{background:#fff4d6;color:#0f1b2d}
+.node .ix{position:absolute;top:-20px;left:4px;font-size:.7rem;color:var(--mute)}
+.ar{width:34px;height:2px;background:var(--ink);position:relative;flex:none}
+.ar:after{content:"";position:absolute;right:-1px;top:-5px;border:6px solid transparent;border-left:9px solid var(--ink);border-right:0}
+.nul{border:2px dashed var(--mute);color:var(--mute);padding:9px 13px;border-radius:10px;font-size:.85rem;flex:none}
+.emp{color:var(--mute);padding:26px;text-align:center}
+dialog{border:0;border-radius:16px;padding:24px;width:min(460px,92vw);background:var(--card);color:var(--ink);box-shadow:0 20px 60px rgba(0,0,0,.35)}
+dialog::backdrop{background:rgba(8,15,28,.55)}
+dialog h2{margin:0 0 6px}
+label{display:block;font-size:.8rem;color:var(--mute);margin:11px 0 4px}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.acts{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
+#toast{position:fixed;bottom:22px;right:22px;background:var(--ink);color:var(--bg);padding:11px 18px;border-radius:10px;opacity:0;transform:translateY(10px);transition:.25s;pointer-events:none;z-index:99}
+#toast.on{opacity:1;transform:none}#toast.err{background:var(--red);color:#fff}
+@media(max-width:1000px){.kpis{grid-template-columns:repeat(2,1fr)}.g2,.g3{grid-template-columns:1fr}}
+@media(max-width:760px){body{flex-direction:column}aside{width:100%;height:auto;position:static;flex-direction:row;overflow-x:auto;padding:10px;gap:6px}.brand,.sfoot{display:none}nav{display:flex;gap:6px}nav button{white-space:nowrap;margin:0}.top,.page{padding-left:16px;padding-right:16px}.top{flex-wrap:wrap}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<aside>
+<div class="brand"><div class="logo"><svg class="ic" viewBox="0 0 24 24" style="stroke:#fff"><path d="M21 8l-9-5-9 5v8l9 5 9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg></div>StockLine</div>
+<nav>
+<button data-v="dash" class="on"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>Dashboard</button>
+<button data-v="inv"><svg viewBox="0 0 24 24"><path d="M3 7l9-4 9 4v10l-9 4-9-4z"/></svg>Inventory<span class="n" id="nCount">0</span></button>
+<button data-v="ll"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="2"/><circle cx="19" cy="12" r="2"/><path d="M7 12h10"/></svg>Linked list</button>
+<button data-v="act"><svg viewBox="0 0 24 24"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg>Activity</button>
+</nav>
+<div class="sfoot">Data structure: singly linked list<br>Stored in this browser</div>
+</aside>
+
+<div class="main">
+<div class="top">
+<h1 id="title">Dashboard</h1>
+<div class="sbox"><svg class="ic" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg><input id="gq" placeholder="Search by name, SKU, category or supplier" aria-label="Search inventory"></div>
+<button class="g ico" id="theme" aria-label="Toggle dark mode"><svg class="ic" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg></button>
+<button id="addBtn"><svg class="ic" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add item</button>
+</div>
+
+<section class="page on" id="p-dash">
+<div class="kpis" id="kpis"></div>
+<div class="g2">
+<div class="card"><h2>Stock value by category</h2><div id="catBars"></div></div>
+<div class="card"><h2>Stock health</h2><div class="donut"><div class="ring" id="ring"><div><span><b id="ringN">0</b>items</span></div></div><div class="lg" id="lg"></div></div></div>
+</div>
+<div class="g3">
+<div class="card"><h2>Needs restocking</h2><div id="restock"></div></div>
+<div class="card"><h2>Recent activity</h2><div id="recent"></div></div>
+</div>
+</section>
+
+<section class="page" id="p-inv"><div class="card">
+<div class="tools">
+<select id="fCat" aria-label="Category"></select>
+<select id="fSt" aria-label="Status"><option value="">All statuses</option><option value="ok">In stock</option><option value="lw">Low stock</option><option value="out">Out of stock</option></select>
+<select id="sort" aria-label="Sort list"><option value="">Sort list by…</option><option value="name">Name</option><option value="category">Category</option><option value="qty">Quantity</option><option value="price">Price</option><option value="id">SKU</option></select>
+<span style="flex:1"></span>
+<button class="g" id="expBtn">Export CSV</button>
+<button class="g" id="impBtn">Import CSV</button><input type="file" id="file" accept=".csv" hidden>
+<button class="g" id="seedBtn">Load sample</button>
+<button class="r" id="clrBtn">Clear all</button>
+</div>
+<div class="tw"><table><thead><tr><th>Pos</th><th>SKU</th><th>Item</th><th>Category</th><th>Supplier</th><th>Stock</th><th>Price</th><th>Value</th><th>Status</th><th></th></tr></thead><tbody id="tb"></tbody></table></div>
+</div></section>
+
+<section class="page" id="p-ll">
+<div class="card" style="margin-bottom:18px">
+<h2>Live linked list</h2>
+<div class="tools">
+<input id="tq" placeholder="Traverse: SKU number or name" aria-label="Traverse search"><button id="tBtn">Search</button>
+<button class="g" id="dFirst">Delete head</button><button class="g" id="dLast">Delete tail</button><button class="g" id="rev">Reverse list</button>
+</div>
+<div class="list" id="viz"></div><p id="sInfo" style="margin:6px 0 0;color:var(--mute);font-size:.85rem"></p>
+</div>
+<div class="card"><h2>Operation complexity</h2><div class="tw"><table><thead><tr><th>Operation</th><th>Time</th><th>How it works</th></tr></thead><tbody>
+<tr><td>Insert at head</td><td>O(1)</td><td>New node points to old head, head moves to new node</td></tr>
+<tr><td>Insert at tail / position</td><td>O(n)</td><td>Walk to the previous node, then relink pointers</td></tr>
+<tr><td>Delete head</td><td>O(1)</td><td>Head moves to head.next</td></tr>
+<tr><td>Delete tail / by SKU</td><td>O(n)</td><td>Find the previous node, then skip over the target</td></tr>
+<tr><td>Search</td><td>O(n)</td><td>Traverse from head until a match or NULL</td></tr>
+<tr><td>Reverse</td><td>O(n)</td><td>Three pointers (prev, curr, next) flip each link in one pass</td></tr>
+<tr><td>Sort</td><td>O(n²)</td><td>Bubble sort swapping node data</td></tr></tbody></table></div></div>
+</section>
+
+<section class="page" id="p-act"><div class="card"><h2>Activity log <button class="g s" id="clrLog">Clear log</button></h2><div id="actList"></div></div></section>
+</div>
+
+<dialog id="dlg"><form id="f" method="dialog" autocomplete="off">
+<h2 id="dTitle">Add item</h2>
+<label for="name">Item name</label><input id="name" required maxlength="50">
+<div class="f2"><div><label for="cat">Category</label><input id="cat" list="cats" required maxlength="30"><datalist id="cats"></datalist></div>
+<div><label for="sup">Supplier</label><input id="sup" maxlength="40"></div></div>
+<div class="f2"><div><label for="qty">Quantity</label><input id="qty" type="number" min="0" required></div>
+<div><label for="price">Unit price (₹)</label><input id="price" type="number" min="0" step="0.01" required></div></div>
+<div class="f2"><div><label for="re">Reorder level</label><input id="re" type="number" min="0" value="10" required></div>
+<div id="wBox"><label for="where">Insert at</label><select id="where"><option value="end">Tail (end)</option><option value="start">Head (start)</option><option value="pos">Position…</option></select></div></div>
+<div id="pBox" hidden><label for="pos">Position (0 is the head)</label><input id="pos" type="number" min="0" value="0"></div>
+<div class="acts"><button type="button" class="g" id="cancel">Cancel</button><button type="submit" id="save">Add item</button></div>
+</form></dialog>
+<div id="toast" role="status"></div>
+
+<script>
+class Node{constructor(d){this.data=d;this.next=null}}
+class LinkedList{
+  constructor(){this.head=null;this.size=0}
+  insertFirst(d){const n=new Node(d);n.next=this.head;this.head=n;this.size++}
+  insertLast(d){const n=new Node(d);if(!this.head)this.head=n;else{let c=this.head;while(c.next)c=c.next;c.next=n}this.size++}
+  insertAt(i,d){if(i<=0)return this.insertFirst(d);if(i>=this.size)return this.insertLast(d);let c=this.head;for(let k=0;k<i-1;k++)c=c.next;const n=new Node(d);n.next=c.next;c.next=n;this.size++}
+  deleteFirst(){if(!this.head)return null;const d=this.head.data;this.head=this.head.next;this.size--;return d}
+  deleteLast(){if(!this.head)return null;if(!this.head.next)return this.deleteFirst();let c=this.head;while(c.next.next)c=c.next;const d=c.next.data;c.next=null;this.size--;return d}
+  deleteById(id){if(!this.head)return false;if(this.head.data.id===id){this.deleteFirst();return true}let c=this.head;while(c.next&&c.next.data.id!==id)c=c.next;if(!c.next)return false;c.next=c.next.next;this.size--;return true}
+  find(fn){let c=this.head,i=0;while(c){if(fn(c.data))return{node:c,index:i};c=c.next;i++}return null}
+  reverse(){let prev=null,cur=this.head;while(cur){const nx=cur.next;cur.next=prev;prev=cur;cur=nx}this.head=prev}
+  sortBy(k){if(!this.head)return;let sw;do{sw=false;for(let c=this.head;c.next;c=c.next){const a=c.data[k],b=c.next.data[k];if(typeof a==="string"?a.localeCompare(b)>0:a>b){[c.data,c.next.data]=[c.next.data,c.data];sw=true}}}while(sw)}
+  toArray(){const r=[];for(let c=this.head;c;c=c.next)r.push(c.data);return r}
+  clear(){this.head=null;this.size=0}
+}
+
+const KEY="stockline-v1",list=new LinkedList();let logs=[],nextId=1001,editId=null,view="dash";
+const $=s=>document.getElementById(s),esc=s=>String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+const inr=n=>"₹"+Number(n).toLocaleString("en-IN",{maximumFractionDigits:2}),sku=id=>"SKU-"+id;
+const stat=d=>d.qty===0?["Out of stock","out"]:d.qty<=d.re?["Low stock","lw"]:["In stock","ok"];
+function save(){try{localStorage.setItem(KEY,JSON.stringify({items:list.toArray(),logs,nextId}))}catch(e){}}
+function load(){try{const s=JSON.parse(localStorage.getItem(KEY));if(!s)return false;s.items.forEach(d=>list.insertLast(d));logs=s.logs||[];nextId=s.nextId||1001;return true}catch(e){return false}}
+function toast(m,e){const t=$("toast");t.textContent=m;t.className="on"+(e?" err":"");clearTimeout(toast.t);toast.t=setTimeout(()=>t.className="",2400)}
+function log(m){logs.unshift({m,t:Date.now()});logs=logs.slice(0,80)}
+const ago=t=>{const s=(Date.now()-t)/1000;return s<60?"just now":s<3600?Math.floor(s/60)+" min ago":s<86400?Math.floor(s/3600)+" h ago":new Date(t).toLocaleString()}
+function seed(){[["Wireless Mouse","Electronics","TechSource",42,799,10],["Mechanical Keyboard","Electronics","TechSource",8,3499,10],["USB-C Cable","Electronics","VoltLine",120,249,25],["A4 Notebook","Stationery","PaperCo",65,60,20],["Gel Pen Pack","Stationery","PaperCo",6,90,15],["Office Chair","Furniture","SitWell",0,6999,3],["Desk Lamp","Furniture","BrightHome",14,899,5],["Whiteboard","Office","SitWell",4,1799,4],["Water Bottle","Lifestyle","HydroMart",55,349,12],["Laptop Stand","Accessories","TechSource",19,1199,6]].forEach(([name,category,sup,qty,price,re])=>list.insertLast({id:nextId++,name,category,sup,qty,price,re}));log("Loaded sample inventory")}
+
+/* ---------- render ---------- */
+const COL={ok:"#23915f",lw:"#e59b0c",out:"#d9382e"};
+function render(hit=-1,vis=-1){
+  const a=list.toArray();$("nCount").textContent=a.length;
+  const val=a.reduce((s,d)=>s+d.qty*d.price,0),low=a.filter(d=>d.qty>0&&d.qty<=d.re).length,out=a.filter(d=>d.qty===0).length;
+  $("kpis").innerHTML=[["Total items",a.length],["Units in stock",a.reduce((s,d)=>s+d.qty,0)],["Inventory value",inr(val)],["Low stock",low],["Out of stock",out]].map(([l,v])=>`<div class="kpi"><span>${l}</span><b>${v}</b></div>`).join("");
+  const cats={};a.forEach(d=>cats[d.category]=(cats[d.category]||0)+d.qty*d.price);
+  const ce=Object.entries(cats).sort((x,y)=>y[1]-x[1]),mx=ce[0]?ce[0][1]||1:1;
+  $("catBars").innerHTML=ce.map(([c,v])=>`<div class="bar"><span>${esc(c)}</span><i style="width:${Math.max(2,v/mx*100)}%"></i><span>${inr(v)}</span></div>`).join("")||'<div class="emp">No data yet</div>';
+  const ok=a.length-low-out,tot=a.length||1,p1=ok/tot*100,p2=p1+low/tot*100;
+  $("ring").style.background=a.length?`conic-gradient(${COL.ok} 0 ${p1}%,${COL.lw} ${p1}% ${p2}%,${COL.out} ${p2}% 100%)`:"var(--line)";
+  $("ringN").textContent=a.length;
+  $("lg").innerHTML=[["ok","In stock",ok],["lw","Low stock",low],["out","Out of stock",out]].map(([k,l,n])=>`<div><i style="background:${COL[k]}"></i>${l}: <b>${n}</b></div>`).join("");
+  const rs=a.filter(d=>d.qty<=d.re).sort((x,y)=>x.qty-y.qty);
+  $("restock").innerHTML=rs.length?rs.slice(0,6).map(d=>`<div class="row"><div class="grow"><b>${esc(d.name)}</b><div class="m">${d.qty} left · reorder at ${d.re}</div></div><button class="s" data-rs="${d.id}">Restock</button></div>`).join(""):'<div class="emp">Everything is above its reorder level.</div>';
+  $("recent").innerHTML=logs.slice(0,6).map(l=>`<div class="row"><div class="grow">${esc(l.m)}</div><span class="m">${ago(l.t)}</span></div>`).join("")||'<div class="emp">No activity yet.</div>';
+  $("actList").innerHTML=logs.map(l=>`<div class="row"><div class="grow">${esc(l.m)}</div><span class="m">${new Date(l.t).toLocaleString()}</span></div>`).join("")||'<div class="emp">No activity yet.</div>';
+  /* inventory table */
+  const fc=$("fCat"),cur=fc.value;fc.innerHTML='<option value="">All categories</option>'+[...]new Set(a.map(d=>d.category))].sort().map(c=>`<option>${esc(c)}</option>`).join("");fc.value=cur;
+  $("cats").innerHTML=[...new Set(a.map(d=>d.category))].map(c=>`<option value="${esc(c)}">`).join("");
+  const q=$("gq").value.trim().toLowerCase(),st=$("fSt").value;
+  const rows=a.map((d,i)=>({d,i})).filter(({d})=>(!fc.value||d.category===fc.value)&&(!st||stat(d)[1]===st)&&(!q||[d.name,d.category,d.sup,sku(d.id)].join(" ").toLowerCase().includes(q)));
+  $("tb").innerHTML=rows.map(({d,i})=>{const[s,c]=stat(d);return`<tr><td>${i}</td><td>${sku(d.id)}</td><td><b>${esc(d.name)}</b></td><td>${esc(d.category)}</td><td>${esc(d.sup||"–")}</td>
+  <td><div class="st"><button data-m="${d.id}" aria-label="Decrease">−</button><span>${d.qty}</span><button data-p="${d.id}" aria-label="Increase">+</button></div></td>
+  <td>${inr(d.price)}</td><td>${inr(d.qty*d.price)}</td><td><span class="bd ${c}">${s}</span></td>
+  <td><button class="g s" data-e="${d.id}">Edit</button> <button class="r s" data-d="${d.id}">Delete</button></td></tr>`}).join("")||`<tr><td colspan="10" class="emp">${a.length?"No items match the filters.":"The inventory is empty. Add an item or load the sample data."}</td></tr>`;
+  /* linked list */
+  $("viz").innerHTML=a.length?'<span class="tag">HEAD</span><div class="ar"></div>'+a.map((d,i)=>`<div class="node ${d.qty===0?"out":d.qty<=d.re?"low":""} ${i===hit?"hit":i<=vis?"vis":""}"><span class="ix">${i}</span><div class="d"><b>${sku(d.id)}</b><small>${esc(d.name)} · ${d.qty}</small></div><div class="p">next</div></div><div class="ar"></div>`).join("")+'<div class="nul">NULL</div>':'<div class="emp" style="width:100%">HEAD points to NULL. The list is empty.</div>';
+  save();
+}
+
+/* ---------- navigation ---------- */
+const T={dash:"Dashboard",inv:"Inventory",ll:"Linked list",act:"Activity"};
+function go(v){view=v;document.querySelectorAll(".page").forEach(p=>p.classList.toggle("on",p.id==="p-"+v));document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("on",b.dataset.v===v));$("title").textContent=T[v]}
+document.querySelector("nav").onclick=e=>{const b=e.target.closest("button");if(b)go(b.dataset.v)};
+$("gq").oninput=()=>{if(view!=="inv")go("inv");render()};
+["fCat","fSt"].forEach(i=>$(i).onchange=()=>render());
+$("theme").onclick=()=>{const d=document.documentElement;d.dataset.theme=d.dataset.theme==="dark"?"light":"dark";try{localStorage.setItem("stockline-theme",d.dataset.theme)}catch(e){}};
+try{const t=localStorage.getItem("stockline-theme");if(t)document.documentElement.dataset.theme=t}catch(e){}
+
+/* ---------- add / edit dialog ---------- */
+function openDlg(id=null){
+  editId=id;$("f").reset();$("re").value=10;$("pBox").hidden=true;
+  const ed=id!==null;$("wBox").hidden=ed;$("dTitle").textContent=ed?"Edit "+sku(id):"Add item";$("save").textContent=ed?"Save changes":"Add item";
+  if(ed){const d=list.find(x=>x.id===id).node.data;$("name").value=d.name;$("cat").value=d.category;$("sup").value=d.sup||"";$("qty").value=d.qty;$("price").value=d.price;$("re").value=d.re}
+  $("dlg").showModal();$("name").focus();
+}
+$("addBtn").onclick=()=>openDlg();$("cancel").onclick=()=>$("dlg").close();
+$("where").onchange=e=>$("pBox").hidden=e.target.value!=="pos";
+$("f").onsubmit=e=>{
+  const v={name:$("name").value.trim(),category:$("cat").value.trim(),sup:$("sup").value.trim(),qty:parseInt($("qty").value),price:parseFloat($("price").value),re:parseInt($("re").value)};
+  if(editId!==null){Object.assign(list.find(x=>x.id===editId).node.data,v);log(`Updated ${sku(editId)} ${v.name}`);toast("Item updated");return render()}
+  const d={id:nextId++,...v},w=$("where").value;
+  if(w==="start")list.insertFirst(d);else if(w==="pos")list.insertAt(Math.max(0,parseInt($("pos").value)||0),d);else list.insertLast(d);
+  log(`Added ${sku(d.id)} ${d.name} (${w==="start"?"head":w==="pos"?"position "+$("pos").value:"tail"})`);toast("Item added");render();
+};
+
+/* ---------- table actions ---------- */
+function adj(id,n,why){const d=list.find(x=>x.id===id).node.data;d.qty=Math.max(0,d.qty+n);log(`${why} ${d.name} (now ${d.qty})`);render()}
+document.addEventListener("click",e=>{
+  const t=e.target.closest("button");if(!t)return;const D=t.dataset;
+  if(D.p)adj(+D.p,1,"Stock in:");if(D.m)adj(+D.m,-1,"Stock out:");
+  if(D.e)openDlg(+D.e);
+  if(D.d){const d=list.find(x=>x.id===+D.d).node.data;if(confirm(`Delete ${d.name}?`)){list.deleteById(d.id);log(`Deleted ${sku(d.id)} ${d.name}`);toast("Item deleted");render()}}
+  if(D.rs){const d=list.find(x=>x.id===+D.rs).node.data,n=parseInt(prompt(`Units to add to ${d.name}:`,Math.max(1,d.re*2-d.qty)));if(n>0)adj(d.id,n,"Restocked:")}
+});
+
+/* ---------- list operations ---------- */
+function trav(){const t=$("tq").value.trim().toLowerCase();if(!t)return toast("Enter a SKU number or a name.",1);
+  const n=t.replace(/^sku-?/,""),r=list.find(d=>/^\d+$/.test(n)?d.id===+n:d.name.toLowerCase().includes(t));
+  if(!r){$("sInfo").textContent=`Not found after visiting all ${list.size} nodes (reached NULL).`;render();return toast("Item not found",1)}
+  $("sInfo").textContent=`Found at position ${r.index} after visiting ${r.index+1} node${r.index?"s":""}.`;
+  let i=0;(function s(){render(-1,i);if(i<r.index){i++;setTimeout(s,280)}else render(r.index,i)})()}
+$("tBtn").onclick=trav;$("tq").onkeydown=e=>e.key==="Enter"&&trav();
+$("dFirst").onclick=()=>{const d=list.deleteFirst();if(!d)return toast("List is empty",1);log(`Deleted head ${sku(d.id)} ${d.name}`);toast("Head deleted");render()};
+$("dLast").onclick=()=>{const d=list.deleteLast();if(!d)return toast("List is empty",1);log(`Deleted tail ${sku(d.id)} ${d.name}`);toast("Tail deleted");render()};
+$("rev").onclick=()=>{list.reverse();log("Reversed the linked list");toast("List reversed");render()};
+$("sort").onchange=e=>{const k=e.target.value;if(!k)return;list.sortBy(k);log(`Sorted list by ${k}`);toast("Sorted by "+k);e.target.value="";render()};
+$("seedBtn").onclick=()=>{if(list.size&&!confirm("Add the sample items to the current list?"))return;seed();render()};
+$("clrBtn").onclick=()=>{if(list.size&&confirm("Remove every item?")){list.clear();log("Cleared inventory");render()}};
+$("clrLog").onclick=()=>{logs=[];render()};
+
+/* ---------- CSV ---------- */
+$("expBtn").onclick=()=>{
+  const q=s=>`"${String(s??"").replace(/"/g,'""')}"`;
+  const csv=["SKU,Name,Category,Supplier,Quantity,Price,ReorderLevel",...list.toArray().map(d=>[sku(d.id),d.name,d.category,d.sup,d.qty,d.price,d.re].map(q).join(","))].join("\n");
+  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));a.download="inventory.csv";a.click();log("Exported CSV");toast("CSV exported");render();
+};
+$("impBtn").onclick=()=>$("file").click();
+$("file").onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{
+  let n=0;r.result.split(/\r?\n/).slice(1).forEach(l=>{const c=[...l.matchAll(/"((?:[^"]|"")*)"|([^,]+)/g)].map(m=>(m[1]??m[2]).replace(/""/g,'"'));
+    if(c.length<7||!c[1])return;list.insertLast({id:nextId++,name:c[1],category:c[2]||"General",sup:c[3],qty:+c[4]||0,price:+c[5]||0,re:+c[6]||0});n++});
+  log(`Imported ${n} items from CSV`);toast(`Imported ${n} items`);e.target.value="";render()};r.readAsText(f)};
+
+if(!load()){seed()}
+render();
+</script>
+</body>
+</html>
+
